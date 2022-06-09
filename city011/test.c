@@ -3,13 +3,127 @@
 
 #define FRAME 64
 #define DIMENSION 15
-#define F 4	//city011~city014
+#define STRING 16	//city0xx_001.txt~city0xx_100.txt
 #define NUMBER 100	//city011_001.txt~city011_100.txt
 
-
-void data_file1(double fname[F][NUMBER])
+double Squre(int x, int count)
 {
-	fname[0][] = {
+	double squre = 1.0;
+	double trans;
+	trans = (double)x;
+
+	for(int i = 1; i < count; i++)
+		squre *= 10.0;
+	return(trans * squre);
+}
+
+double Float_Squre(int x, int count)
+{
+	double squre = 1.0;
+	double trans;
+	trans = (double)x;
+
+	for(int i = 0; i < count; i++)
+		squre /= 10.0;
+	return (trans * squre);
+}
+
+double Trans(int str[NUMBER], int count)
+{
+	double total = 0.0;
+
+	for(int i = 0; i < count; i++)
+		total += Squre(str[i], count - 1);
+	return total;
+}
+
+double Float_Trans(int str[NUMBER], int count)
+{
+	int i = 0, point = 0;
+	double total = 0.0;
+	for(i; i < count; i++)
+	{
+		if(str[i] == 46)
+		{
+			point = i;
+			break;
+		}
+	}
+	//整数部
+	for(int j = 0; j < point; j++)
+	{
+		total += Squre(str[j], point - j);
+	}
+	point++;
+	
+	//少数部
+	for(int j = 0; j < count - i; j++)
+	{
+		total += Float_Squre(str[point++], j+1);
+	}
+	return total;
+}
+
+void file_input(char city011[][STRING], char city012[][STRING], char city021[][STRING], char city022[][STRING], double data[FRAME][DIMENSION])
+{
+	int ch;
+	FILE *fp;
+	int str[100], ttr[100];
+	int i = 0, count = 0;	//カウントする変数
+	int frame = 0, dimension = 0;
+	 
+	//ファイルの文字を１文字ずつ読み込みながら数値化する.
+		fp = fopen(city011[0], "r");
+		if(fp == NULL)
+			printf("%s file don't open.\n", city011[0]);
+		else
+		{
+			while((ch = fgetc(fp)) != EOF)
+			{
+				// .
+				if(ch == 46)
+					str[count++] = 46;
+				//0~9
+				else if(ch >= 48 && ch <= 57)
+				{
+					str[count++] = (ch - 48);
+					ttr[i] = Trans(str, count);
+				}
+				//小数点の確認
+				for(int j = 0; j < count; j++)
+				{
+					if(str[j] == 46)
+						ttr[i] = Float_Trans(str, count); 
+				}
+				if(ch == 32)
+					data[frame][dimension++] = ttr[i];
+				else if(ch == 10)
+				{
+					data[frame++][dimension] = ttr[i];
+					dimension = 0;
+				}
+			}
+		}
+		fclose(fp);
+}
+
+void print_kansu(double data[FRAME][DIMENSION])
+{
+	for(int i = 0; i < FRAME; i++)
+	{
+		for(int j = 0; j < DIMENSION; j++)
+		{
+			printf("data[%d][%d]:%f\t", i, j, data[i][j]);
+			if((j + 1) % 4 == 0)
+				putchar('\n');
+		}
+	}
+}
+
+int main(void)
+{
+	double data[FRAME][DIMENSION];	//ファイルのデータを格納
+	char city011[][STRING] = {
 		"city011_001.txt", "city011_002.txt", "city011_003.txt",
 		"city011_004.txt", "city011_005.txt", "city011_006.txt",
 		"city011_007.txt", "city011_008.txt", "city011_009.txt",
@@ -43,13 +157,8 @@ void data_file1(double fname[F][NUMBER])
 		"city011_091.txt", "city011_092.txt", "city011_093.txt",
 		"city011_094.txt", "city011_095.txt", "city011_096.txt",
 		"city011_097.txt", "city011_098.txt", "city011_099.txt",
-		"city011_100.txt"
-		};
-}
-
-void data_file2(double fname[NUMBER])
-{
-	fname[1][] = {
+		"city011_100.txt"};
+	char city012[][STRING] = {
 		"city012_001.txt", "city012_002.txt", "city012_003.txt",
 		"city012_004.txt", "city012_005.txt", "city012_006.txt",
 		"city012_007.txt", "city012_008.txt", "city012_009.txt",
@@ -85,12 +194,7 @@ void data_file2(double fname[NUMBER])
 		"city012_097.txt", "city012_098.txt", "city012_099.txt",
 		"city012_100.txt"
 		};
-}
-
-
-void data_file3(double fname[NUMBER])
-{
-	fname[2][] = {
+	char city021[][STRING] = {
 		"city021_001.txt", "city021_002.txt", "city021_003.txt",
 		"city021_004.txt", "city021_005.txt", "city021_006.txt",
 		"city021_007.txt", "city021_008.txt", "city021_009.txt",
@@ -126,11 +230,7 @@ void data_file3(double fname[NUMBER])
 		"city021_097.txt", "city021_098.txt", "city021_099.txt",
 		"city021_100.txt"
 		};
-}
-
-void data_file4(double fname[NUMBER])
-{
-	fname[3][] = {
+	char city022[][STRING] = {
 		"city022_001.txt", "city022_002.txt", "city022_003.txt",
 		"city022_004.txt", "city022_005.txt", "city022_006.txt",
 		"city022_007.txt", "city022_008.txt", "city022_009.txt",
@@ -166,30 +266,9 @@ void data_file4(double fname[NUMBER])
 		"city022_097.txt", "city022_098.txt", "city022_099.txt",
 		"city022_100.txt"
 		};
-}
-
-
-void file_input(double data[NUMBER])
-	FILE *fp;
 	
-	fp = fopen(fname, "r");
-	if(fp = NULL)
-		printf("%s file don't open.\n", fname);
-	while((ch = fgetc(fp)) != EOF)
-	{
-
-	}
-}
-
-int main(void)
-{
-	double data100[F][NUMBER];
-	double data[FRAME][DIMENSION];
-	
-	data_file1(data100);
-	data_file2(data100);
-	data_file3(data100);
-	data_file4(data100);
+	file_input(city011, city012, city021, city022, data);
+	print_kansu(data);
 
 	return 0;
 }
