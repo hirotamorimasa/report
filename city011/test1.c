@@ -77,12 +77,29 @@ void file_input(int str[100], double data[FRAME][DIMENSION])
 		{
 			while((ch = fgetc(fp)) != EOF)
 			{
-				str[i++] = ch;
+				// 0 ~ 9
+				if(ch >= 48 && ch <= 57)
+				{
+					str[count++] = ch - 48;
+					data[frame][dimension] = Trans(str, count);
+				}
+				//空白
+				if(ch == 32)
+					dimension++;
+				else if(ch == 10)
+					frame++;
+				// その他(マイナス符号45, 小数点46など)
+				else 
+					str[count++] = ch;
+//				for(int j = 0; j < count; j++)
+//				{
+//					if(str[j] == 46)
+//						data[frame][dimension++] = Float_Trans(str, count);
+//				}
 			}
 		}
 		fclose(fp);
-		for(int j = 0; str[j] != 0; j++)
-			printf("%3d\t", str[j]);
+		printf("%f\t", data[0][0]);
 		putchar('\n');
 		return;
 }
