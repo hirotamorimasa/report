@@ -1,128 +1,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define FRAME 64
+#define FRAME 61
 #define DIMENSION 15
 #define STRING 16	//city0xx_001.txt~city0xx_100.txt
-#define NUMBER 100	//city011_001.txt~city011_100.txt
+#define NUMBER 916	//city011_001.txt~city011_100.txt
 
-double Squre(int x, int count)
-{
-	double squre = 1.0;
-	double trans;
-	trans = (double)x;
-
-	for(int i = 1; i < count; i++)
-		squre *= 10.0;
-	return(trans * squre);
-}
-
-double Float_Squre(int x, int count)
-{
-	double squre = 1.0;
-	double trans;
-	trans = (double)x;
-
-	for(int i = 0; i < count; i++)
-		squre /= 10.0;
-	return (trans * squre);
-}
-
-double Trans(int str[NUMBER], int count)
-{
-	double total = 0.0;
-
-	for(int i = 0; i < count; i++)
-		total += Squre(str[i], count - 1);
-	return total;
-}
-
-double Float_Trans(int str[NUMBER], int count)
-{
-	int i = 0, point = 0;
-	double total = 0.0;
-	for(i; i < count; i++)
-	{
-		if(str[i] == 46)
-		{
-			point = i;
-			break;
-		}
-	}
-	//整数部
-	for(int j = 0; j < point; j++)
-	{
-		total += Squre(str[j], point - j);
-	}
-	point++;
-	
-	//少数部
-	for(int j = 0; j < count - i; j++)
-	{
-		total += Float_Squre(str[point++], j+1);
-	}
-	return total;
-}
-
-void file_input(char city011[][STRING], char city012[][STRING], char city021[][STRING], char city022[][STRING], double data[FRAME][DIMENSION])
+int file_line(char fname[])
 {
 	int ch;
 	FILE *fp;
-	int str[100], ttr[100];
-	int i = 0, count = 0;	//カウントする変数
-	int frame = 0, dimension = 0;
-	 
-	//ファイルの文字を１文字ずつ読み込みながら数値化する.
-		fp = fopen(city011[0], "r");
-		if(fp == NULL)
-			printf("%s file don't open.\n", city011[0]);
-		else
-		{
-			while((ch = fgetc(fp)) != EOF)
-			{
-				// .
-				if(ch == 46)
-					str[count++] = 46;
-				//0~9
-				else if(ch >= 48 && ch <= 57)
-				{
-					str[count++] = (ch - 48);
-					ttr[i] = Trans(str, count);
-				}
-				//小数点の確認
-				for(int j = 0; j < count; j++)
-				{
-					if(str[j] == 46)
-						ttr[i] = Float_Trans(str, count); 
-				}
-				if(ch == 32)
-					data[frame][dimension++] = ttr[i];
-				else if(ch == 10)
-				{
-					data[frame++][dimension] = ttr[i];
-					dimension = 0;
-				}
-			}
-		}
-		fclose(fp);
+	int line = 0;
+	int count = 0;
+
+	fp = fopen(fname, "r");
+	while((ch = fgetc(fp)) != EOF)
+		if(ch == 10)
+			count++;
+	fclose(fp);
+	return count;
 }
 
-void print_kansu(double data[FRAME][DIMENSION])
+void file_print(double data[NUMBER], int count)
 {
-	for(int i = 0; i < FRAME; i++)
+	for(int i = 0; i < count; i++)
+		printf("data[%d]:%lf\n", i, data[i]);
+}
+
+void file_read(char city011[][STRING], double data[NUMBER])
+{
+	FILE *fp;
+	int count = 0;
+	int result;
+	int frame = 0, dimension = 0;	//frame:61行  dimension:15要素(列)
+	int line = file_line(city011[0]);
+
+	fp = fopen(city011[0], "r");
+	if(fp == NULL)
 	{
-		for(int j = 0; j < DIMENSION; j++)
-		{
-			printf("data[%d][%d]:%f\t", i, j, data[i][j]);
-			if((j + 1) % 4 == 0)
-				putchar('\n');
-		}
+		printf("%s file don't  open.\n", city011[0]);
+		return;
 	}
+	printf("file_line:%d\n", line);
+	for(int i = 0; i < DIMENSION * line; i++)
+	{
+		result = fscanf(fp, "%lf", &data[count]);
+		if(result == EOF)	break;
+		count++;
+	}
+	fclose(fp);
+	file_print(data, count);	//データを表示
+	return;
 }
 
 int main(void)
 {
 	double data[FRAME][DIMENSION];	//ファイルのデータを格納
+	double data_915[NUMBER];
 	char city011[][STRING] = {
 		"city011_001.txt", "city011_002.txt", "city011_003.txt",
 		"city011_004.txt", "city011_005.txt", "city011_006.txt",
@@ -266,9 +200,7 @@ int main(void)
 		"city022_097.txt", "city022_098.txt", "city022_099.txt",
 		"city022_100.txt"
 		};
-	
-	file_input(city011, city012, city021, city022, data);
-	print_kansu(data);
+	file_read(city011, data_915);
 
 	return 0;
 }
