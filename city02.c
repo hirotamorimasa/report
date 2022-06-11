@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "./sub.city021/city021.h"
+#include "./sub.city012/city012.h"
 #include "./sub.city022/city022.h"
 
 #define FRAME 100
@@ -12,13 +12,13 @@
 
 int main(void)
 {
-	double city021_data[DATA_SET][FRAME][DIMENSION];
+	double city012_data[DATA_SET][FRAME][DIMENSION];
 	double city022_data[DATA_SET][FRAME][DIMENSION];
 
-	double city021_data1300[DATA_SET][NUMBER];
+	double city012_data1300[DATA_SET][NUMBER];
 	double city022_data1300[DATA_SET][NUMBER];
 
-	city021_main(city021_data, city021_data1300);
+	city012_main(city012_data, city012_data1300);
 	city022_main(city022_data, city022_data1300);
 	return 0;
 }
