@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "./sub.city011/city011.h"
 #include "./sub.city012/city012.h"
 #include "./sub.city021/city021.h"
@@ -11,3 +13,4 @@ int main(void)
 	city022_main();
 	return 0;
 }
+
