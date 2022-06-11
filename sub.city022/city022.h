@@ -1,7 +1,7 @@
 #define FRAME 80
 #define DIMENSION 15
 #define STRING 30       //city0xx_001.txt~city0xx_100.txt
-#define NUMBER 916      //city011_001.txt~city011_100.txt
+#define NUMBER 1300      //city011_001.txt~city011_100.txt
 #define DATA_SET 100   //データセット100個分
 
 int city022_file_line(char fname[])                                     
@@ -78,9 +78,8 @@ void city022_file_processing(char city022[][STRING], double data[DATA_SET][FRAME
 	}
 }
 
-void city022_main(void)
+void city022_main(double city022_data[DATA_SET][FRAME][DIMENSION], double city022_data1300[DATA_SET][NUMBER])
 {
-	double data[DATA_SET][FRAME][DIMENSION];	//ファイルのデータを格納
 	double data_915[DATA_SET][NUMBER];
 	char city022[][STRING] = {
                 "./sub.city022/city022_001.txt", "./sub.city022/city022_002.txt", "./sub.city022/city022_003.txt",
@@ -118,9 +117,9 @@ void city022_main(void)
                 "./sub.city022/city022_097.txt", "./sub.city022/city022_098.txt", "./sub.city022/city022_099.txt",
                 "./sub.city022/city022_100.txt"                            
 		};
-	city022_file_read(city022, data_915);
-	city022_file_processing(city022, data, data_915);
-	city022_file_print(city022, data);
+	city022_file_read(city022, city022_data1300);
+	city022_file_processing(city022, city022_data, city022_data1300);
+	city022_file_print(city022, city022_data);
 	return;
 }
 
