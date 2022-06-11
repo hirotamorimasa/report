@@ -1,7 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-#define FRAME 80
+#define FRAME 100
 #define DIMENSION 15
 #define STRING 30       //city0xx_001.txt~city0xx_100.txt
 #define NUMBER 1500      //city011_001.txt~city011_100.txt
