@@ -81,7 +81,7 @@ void file_processing(char city022[][STRING], double data[DATA_SET][FRAME][DIMENS
 	}
 }
 
-int main(void)
+void city022_main(void)
 {
 	double data[DATA_SET][FRAME][DIMENSION];	//ファイルのデータを格納
 	double data_915[DATA_SET][NUMBER];
@@ -125,7 +125,7 @@ int main(void)
 	file_read(city022, data_915);
 	file_processing(city022, data, data_915);
 	file_print(city022, data);
-return 0;
+	return;
 }
 
 
