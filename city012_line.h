@@ -1,13 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 #define FRAME 150
-#define DIMENSION 15
 #define STRING 30       //city0xx_001.txt~city0xx_100.txt
-#define NUMBER 1500      //city011_001.txt~city011_100.txt
 #define DATA_SET 100   //データセット100個分
 
-int city012_file_line(char fname[])                                     
+int city012_line(char fname[])                                     
 {
         int ch;
         FILE *fp;
@@ -22,68 +19,13 @@ int city012_file_line(char fname[])
         return count;
 }
 
-/*
-void city012_file_print(char city012[][STRING], double data[DATA_SET][FRAME][DIMENSION])
+void city012_line_processing(char city012[][STRING], int line_data[DATA_SET])
 {
-	int line;
-	for(int i = 0; i < DATA_SET; i++){
-		line = city012_file_line(city012[i]);
-		for(int j = 0; j < line; j++)
-			for(int k = 0; k < DIMENSION; k++)
-				printf("data[%d][%d][%d]:%lf\n", i+1, j+1, k+1, data[i][j][k]);
-		printf("\n\n");
-	}
-}
-*/
-
-//一次元配列でデータを読み込む
-void city012_file_read(char city012[][STRING], double data[DATA_SET][NUMBER])
-{
-	FILE *fp;
-	int count = 0;
-	int result;
-	int frame = 0, dimension = 0;	//frame:61行  dimension:15要素(列)
-	int line;
-
 	for(int i = 0; i < DATA_SET; i++)
-	{
-		fp = fopen(city012[i], "r");
-		if(fp == NULL)
-		{
-			printf("%s file don't  open.\n", city012[i]);
-			return;
-		}
-		line = city012_file_line(city012[i]);
-		for(int j = 0; j < DIMENSION * line; j++)
-		{
-			result = fscanf(fp, "%lf", &data[i][count]);
-			if(result == EOF)	break;
-			count++;
-		}
-		count = 0;
-	}
-	fclose(fp);
-	return;
+		line_data[i] = city012_line(city012[i]);
 }
 
-//二次元配列に変換する
-void city012_file_processing(char city012[][STRING], double data[DATA_SET][FRAME][DIMENSION], double data915[DATA_SET][NUMBER])
-{
-	int count = 0;
-	int line;
-	for(int i = 0; i < DATA_SET; i++)
-	{
-		line = city012_file_line(city012[i]);
-		for(int j = 0; j < line; j++)
-		{
-			for(int k = 0; k < DIMENSION; k++)
-				data[i][j][k] = data915[i][count++];
-		}
-	count = 0;
-	}
-}
-
-void city012_main(double city012_data[DATA_SET][FRAME][DIMENSION], double city012_data1300[DATA_SET][NUMBER])
+void city012_File_Line(int line_data[DATA_SET])
 {
         char city012[][STRING] = {
         	"./sub.city012/city012_001.txt", "./sub.city012/city012_002.txt", "./sub.city012/city012_003.txt",
@@ -121,10 +63,7 @@ void city012_main(double city012_data[DATA_SET][FRAME][DIMENSION], double city01
                 "./sub.city012/city012_097.txt", "./sub.city012/city012_098.txt", "./sub.city012/city012_099.txt",
                 "./sub.city012/city012_100.txt"
 		 };
-
-	city012_file_read(city012, city012_data1300);
-	city012_file_processing(city012, city012_data, city012_data1300);
-//	city012_file_print(city012, city012_data);
+	city012_line_processing(city012, line_data);
 	return;
 }
 

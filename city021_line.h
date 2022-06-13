@@ -1,12 +1,10 @@
 #include <stdio.h>
 
 #define FRAME 150
-#define DIMENSION 15
+#define DATA_SET 100
 #define STRING 30       //city0xx_001.txt~city0xx_100.txt
-#define NUMBER 1500      //city011_001.txt~city011_100.txt
-#define DATA_SET 100   //データセット100個分
 
-int city021_file_line(char fname[])                                     
+int city021_line(char fname[])                                     
 {       
         int ch;
         FILE *fp;
@@ -21,68 +19,13 @@ int city021_file_line(char fname[])
         return count;
 }
 
-/*
-void city021_file_print(char city021[][STRING], double data[DATA_SET][FRAME][DIMENSION])
+void city021_line_processing(char city021[][STRING], int line_data[DATA_SET])
 {
-	int line;
-	for(int i = 0; i < DATA_SET; i++){
-		line = city021_file_line(city021[i]);
-		for(int j = 0; j < line; j++)
-			for(int k = 0; k < DIMENSION; k++)
-				printf("data[%d][%d][%d]:%lf\n", i+1, j+1, k+1, data[i][j][k]);
-		printf("\n\n");
-	}
-}
-*/
-
-//一次元配列でデータを読み込む
-void city021_file_read(char city021[][STRING], double data[DATA_SET][NUMBER])
-{
-	FILE *fp;
-	int count = 0;
-	int result;
-	int frame = 0, dimension = 0;	//frame:61行  dimension:15要素(列)
-	int line;
-
-	for(int i = 0; i < DATA_SET; i++)
-	{
-		fp = fopen(city021[i], "r");
-		if(fp == NULL)
-		{
-			printf("%s file don't  open.\n", city021[i]);
-			return;
-		}
-		line = city021_file_line(city021[i]);
-		for(int j = 0; j < DIMENSION * line; j++)
-		{
-			result = fscanf(fp, "%lf", &data[i][count]);
-			if(result == EOF)	break;
-			count++;
-		}
-		count = 0;
-	}
-	fclose(fp);
-	return;
+        for(int i = 0; i < DATA_SET; i++)
+                line_data[i] = city021_line(city021[i]);
 }
 
-//二次元配列に変換する
-void city021_file_processing(char city021[][STRING], double data[DATA_SET][FRAME][DIMENSION], double data915[DATA_SET][NUMBER])
-{
-	int count = 0;
-	int line;
-	for(int i = 0; i < DATA_SET; i++)
-	{
-		line = city021_file_line(city021[i]);
-		for(int j = 0; j < line; j++)
-		{
-			for(int k = 0; k < DIMENSION; k++)
-				data[i][j][k] = data915[i][count++];
-		}
-	count = 0;
-	}
-}
-
-void city021_main(double city021_data[DATA_SET][FRAME][DIMENSION], double city021_data1300[DATA_SET][NUMBER])
+void city021_File_Line(int line_data[DATA_SET])
 {
 	char city021[][STRING] = {
                 "./sub.city021/city021_001.txt", "./sub.city021/city021_002.txt", "./sub.city021/city021_003.txt",
@@ -120,11 +63,7 @@ void city021_main(double city021_data[DATA_SET][FRAME][DIMENSION], double city02
                 "./sub.city021/city021_097.txt", "./sub.city021/city021_098.txt", "./sub.city021/city021_099.txt",
                 "./sub.city021/city021_100.txt"
                  };
-
-	city021_file_read(city021, city021_data1300);
-	city021_file_processing(city021, city021_data, city021_data1300);
-//	city021_file_print(city021, city021_data);
+	city021_line_processing(city021, line_data);
 	return;
 }
-
 
