@@ -7,6 +7,7 @@
 #define NUMBER 1500      //city011_001.txt~city011_100.txt
 #define DATA_SET 100   //データセット100個分
 
+//ファイルの行数を確認する
 int city011_file_line(char fname[])                                     
 {  
 	int ch;
@@ -36,7 +37,7 @@ void city011_file_print(char city011[][STRING], double data[DATA_SET][FRAME][DIM
 }
 */
 
-//一次元配列でデータを読み込む
+//一次元配列でデータを読み込む（実際は２次元配列）
 void city011_file_read(char city011[][STRING], double data[DATA_SET][NUMBER])
 {
 	FILE *fp;
@@ -66,7 +67,7 @@ void city011_file_read(char city011[][STRING], double data[DATA_SET][NUMBER])
 	return;
 }
 
-//二次元配列に変換する
+//二次元配列に変換する（実際は３次元配列）
 void city011_file_processing(char city011[][STRING], double data[DATA_SET][FRAME][DIMENSION], double data915[DATA_SET][NUMBER])
 {
 	int count = 0;
