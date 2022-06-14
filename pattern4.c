@@ -15,29 +15,64 @@
 
 void dp_processing(int city012_line_data[DATA_SET], int city021_line_data[DATA_SET], double dp[DATA_SET][DATA_SET], double city012_data[DATA_SET][FRAME][DIMENSION], double city021_data[DATA_SET][FRAME][DIMENSION])
 {
-	int city_012, city_021;
-	for(city_012 = 0; city_012 < DATA_SET; city_012++)
+	int line;
+	for(int city_012 = 0; city_012 < DATA_SET; city_012++)
 	{
-		for(city_021 = 0; city_021 < DATA_SET; city_021++)
+		for(int city_021 = 0; city_021 < DATA_SET; city_021++)
 		{
-			int line_012 = city012_line_data[city_012];
-			int line_021 = city021_line_data[city_021];
-			for(int i = 0; i < line_012; i++)
-				for(int j = 0; j < line_021; j++)
-					for(int k = 0; k < DIMENSION; k++)
-						dp[city_012][city_021] += pow(city012_data[city_012][i][k] - city021_data[city_021][j][k], 2.0);
-		}
+			if(city012_line_data[city_012] > city021_line_data[city_021])
+				line = city012_line_data[city_012];
+			else
+				line = city021_line_data[city_021];
+			
+			for(int i = 0; i < line; i++)
+				for(int k = 0; k < DIMENSION; k++)
+					dp[city_012][city_021] += pow(city012_data[city_012][i][k] - city021_data[city_021][i][k], 2.0);
+		
 		dp[city_012][city_021] = pow(dp[city_012][city_021], 0.5);
+		}
 	}
 }
 
-void dp_print(double dp[DATA_SET][DATA_SET])
+//最小値を計算
+void dp_minimum(int store[DATA_SET], double min[DATA_SET], double dp[DATA_SET][DATA_SET])
 {
-	for(int i = 0; i < DATA_SET; i++)
-		for(int j = 0; j < DATA_SET; j++)
-			printf("dp[%d][%d]:%lf\n", i+1, j+1, dp[i][j]);
+        for(int i = 0; i < DATA_SET; i++)
+        {
+                for(int j = 0; j < DATA_SET; j++)
+                {
+                        //最初は0番目を格納
+                        if(j == 0)
+                                min[i] = dp[i][j];
+                        //0~99番までの最小値を探す
+                        else
+                        {
+                                if(min[i] >= dp[i][j])
+                                {
+                                        min[i] = dp[i][j];
+                                        store[i] = j + 1;
+                                }
+                        }
+                }
+        }
 }
 
+//ヒットしたファイルと照らし合わせる
+void dp_minimum_print(int store[DATA_SET], double min[DATA_SET])
+{
+        for(int i = 0; i < DATA_SET; i++)
+                printf("city011_%03d.txt---->city021_%03d.txt:%lf\n", i+1, store[i], min[i]);
+}
+
+//割合を計算
+void proportion(int store[DATA_SET])
+{
+        int ratio = 0;
+        for(int i = 0; i < DATA_SET; i++)
+                if((i+1) == store[i])
+                        ratio++;
+        printf("ratio=%lf\n", (double)ratio / 100.0);
+}
 
 int main(void)
 {
@@ -51,6 +86,8 @@ int main(void)
 	int city021_line_data[DATA_SET];
 	
 	double dp[DATA_SET][DATA_SET];
+	double min[DATA_SET];
+	int store[DATA_SET];
 
 	city012_File_Line(city012_line_data);
 	city021_File_Line(city021_line_data);
@@ -59,7 +96,10 @@ int main(void)
 	city021_main(city021_data, city021_data1300);
 
 	dp_processing(city012_line_data, city021_line_data, dp, city012_data, city021_data);
-	dp_print(dp);
+	dp_minimum(store, min, dp);
+//	dp_minimum_print(store, min);
+
+	proportion(store);
 	return 0;
 }
 
